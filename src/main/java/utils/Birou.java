@@ -6,4 +6,10 @@ public class Birou {
     public Birou(ArrayList<Ghiseu> ghisee){
         this.ghisee = ghisee;
     }
+
+    public Ghiseu getGhiseu1(){
+        for(Ghiseu g: ghisee)
+            return g;
+        return null;
+    }
 }

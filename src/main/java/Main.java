@@ -1,36 +1,31 @@
 import utils.Client;
-import utils.Document;
-import utils.Functionar;
 import utils.Ghiseu;
+import utils.Birou;
+import java.util.ArrayList;
 
 public class Main {
 
     public static void main(String args[]) {
-        Document document = new Document();
-        Ghiseu ghiseu = new Ghiseu(document);
-        Client client = new Client("alex",document);
-        Client client2 = new Client("adi",document);
-        Client client3 = new Client("cata",document);
-        Client client4 = new Client("bia",document);
-        Client client5 = new Client("cristi",document);
+       Ghiseu g1b1 = new Ghiseu("Ghiseu 1 Birou 1");
+       Ghiseu g2b1 = new Ghiseu("Ghiseu 2 Birou 1");
+       ArrayList<Ghiseu> ghiseeb1 = new ArrayList<>();
+       ghiseeb1.add(g1b1);
+       ghiseeb1.add(g2b1);
+       Birou b1 = new Birou(ghiseeb1);
 
-        client.setName("alex");
-        client2.setName("adi");
-        client3.setName("cata");
-        client4.setName("bia");
-        client5.setName("cristi");
+        Ghiseu g1b2 = new Ghiseu("Ghiseu 1 Birou 2");
+        Ghiseu g2b2 = new Ghiseu("Ghiseu 2 Birou 2");
+        ArrayList<Ghiseu> ghiseeb2 = new ArrayList<>();
+        ghiseeb2.add(g1b2);
+        ghiseeb2.add(g2b2);
+        Birou b2 = new Birou(ghiseeb2);
 
-        ghiseu.start();
-        client.start();
-        client2.start();
-        client3.start();
-        client4.start();
-        client5.start();
+        ArrayList<Birou> birouri = new ArrayList<>();
+        birouri.add(b1);
+        birouri.add(b2);
 
-//        Functionar functionar = new Functionar("F");
-//        functionar.start();
-//        for(int i=0;i<20;i++){
-//            new Client("Client "+i).start();
-//        }
+        for(int i=0;i<20;i++){
+            new Client("Client "+i, birouri).start();
+        }
     }
 }

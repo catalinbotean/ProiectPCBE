@@ -5,14 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="faadc8a2-6da6-425e-bc8f-4e96b90ef6a8" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/Birou.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/Birou.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/utils/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/Client.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/Functionar.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/utils/Ghiseu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/Ghiseu.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Main.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/utils/Birou.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/utils/Birou.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/utils/Client.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/utils/Client.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/utils/Functionar.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/utils/Ghiseu.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/utils/Ghiseu.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -86,5 +88,6 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>

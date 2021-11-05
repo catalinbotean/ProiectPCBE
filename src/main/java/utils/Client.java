@@ -1,29 +1,25 @@
 package utils;
 
+import java.util.ArrayList;
+
 public class Client extends Thread{
     String nume;
-    Document document;
-    //lista de documente
+    ArrayList<Birou> birouri;
+    //lista de documente  => lista de birouri la care trebuie sa mearga
 
-
-    public Client(String nume,Document document) {
+    public Client(String nume, ArrayList<Birou> b) {
         this.nume = nume;
-        this.document = document;
         //metoda citire documente json
+        birouri = b;
+    }
+
+    public void getDocument(Ghiseu g){
+        System.out.println(nume+ " a fost la " + g);
     }
 
     public void run() {
-        while(true) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            try {
-                document.get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        for(Birou b: birouri){
+            getDocument(b.getGhiseu1());
         }
     }
 
