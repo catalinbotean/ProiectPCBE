@@ -5,12 +5,12 @@ import java.util.ArrayList;
 public class Client extends Thread{
     String nume;
     ArrayList<Birou> birouri;
-    //lista de documente  => lista de birouri la care trebuie sa mearga
 
     public Client(String nume, ArrayList<Birou> b) {
         this.nume = nume;
+        birouri = new ArrayList<>();
         //metoda citire documente json
-        birouri = b;
+        getBirouFromDocument("Document 1 2", b);
     }
 
     public void getDocument(Ghiseu g){
@@ -20,6 +20,17 @@ public class Client extends Thread{
     public void run() {
         for(Birou b: birouri){
             getDocument(b.getGhiseu1());
+        }
+    }
+
+    public void getBirouFromDocument(String numeDocument, ArrayList<Birou> b){
+        String[] array = numeDocument.split(" ");
+        for(int i = 1; i < array.length; i++){
+            for(Birou birou : b){
+                if(birou.getId() == Integer.parseInt(array[i])){
+                    birouri.add(birou);
+                }
+            }
         }
     }
 
