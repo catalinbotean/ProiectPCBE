@@ -13,14 +13,17 @@ public class Client extends Thread{
         getBirouFromDocument("Document 1 2", b);
     }
 
-    public void getDocument(Ghiseu g){
-        System.out.println(nume+ " a fost la " + g);
-    }
-
     public void run() {
         for(Birou b: birouri){
-            getDocument(b.getGhiseu1());
+           b.addClientToQueue(this);
+//           try {
+//               Thread.sleep(200);
+//           }catch(InterruptedException e)
+//           {
+//               e.printStackTrace();
+//           }
         }
+
     }
 
     public void getBirouFromDocument(String numeDocument, ArrayList<Birou> b){
