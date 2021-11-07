@@ -1,48 +1,49 @@
 package utils;
 
-public class Ghiseu extends Thread{
+public class Ghiseu extends Thread {
 
     private String name;
     private Birou b;
+    private int documentNumberToPrint;
     private boolean taken = false;
 
-    public Ghiseu(String n){
+    public Ghiseu(String n, int documentNumberToPrint) {
         name = n;
+        this.documentNumberToPrint  = documentNumberToPrint;
     }
 
     @Override
     public void run() {
-        while(true)
-        {
-            if(!taken)
-            {
-                taken = true;
-                takeClient(b);
-                try {
-                    Thread.sleep(1000);
-                }catch(InterruptedException e)
-                {
-                    e.printStackTrace();
+        while (true) {
+            synchronized (this){
+                if (!taken) {
+                    taken = true;
+                    takeClient(b);
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    taken = false;
                 }
-                taken = false;
             }
-
         }
     }
-    public void setBirou(Birou b)
-    {
+
+    public void setBirou(Birou b) {
         this.b = b;
     }
-    public void takeClient(Birou b)
-    {
+
+    public void takeClient(Birou b) {
         try {
             System.out.println(b.getQueue().take() + " " + name);
-        }catch(InterruptedException e)
-        {
+            b.goPrintDocument(this.documentNumberToPrint, this);
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
-    public String toString(){
+
+    public String toString() {
         return name;
     }
 }
