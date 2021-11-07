@@ -5,16 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="faadc8a2-6da6-425e-bc8f-4e96b90ef6a8" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/utils/PauzaCafea.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_11_6_2021_1_49_PM__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_11_6_2021_1_49_PM__Changes_.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/utils/Birou.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/Birou.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/utils/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/Client.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/utils/Ghiseu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/Ghiseu.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/Birou.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/utils/Birou.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/Client.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/utils/Client.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/Ghiseu.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/utils/Ghiseu.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,7 +26,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="PCBE-3/implementing-wainting-tails-for-clients" />
+        <entry key="$PROJECT_DIR$" value="PCBE-4/implementing-printer-and-pos" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -62,6 +57,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.Main" />
         <item itemvalue="Application.Main" />
         <item itemvalue="Application.Main" />
       </list>

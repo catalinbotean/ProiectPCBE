@@ -1,6 +1,7 @@
 import utils.Client;
 import utils.Ghiseu;
 import utils.Birou;
+import utils.PauzaCafea;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +19,10 @@ public class Main {
 //        ghiseeb1.add(g1b1);
 //        ghiseeb1.add(g2b1);
         Birou b1 = new Birou(ghiseeb1);
+        PauzaCafea pauzaCafea = new PauzaCafea(ghiseeb1);
         g1b1.start();
         g2b1.start();
+        pauzaCafea.start();
 //        g3b1.start();
 //        g4b1.start();
 //        g5b1.start();
