@@ -1,7 +1,4 @@
-import utils.Client;
-import utils.Ghiseu;
-import utils.Birou;
-import utils.PauzaCafea;
+import utils.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,9 +35,9 @@ public class Main {
         birouri.add(b1);
 //        birouri.add(b2);
 
-        for (int i = 0; i < 40; i++) {
-            new Client("Client " + i, birouri).start();
-        }
-
+//        for (int i = 0; i < 40; i++) {
+//            new Client("Client " + i).start();
+//        }
+        CitireJson.getClient();
     }
 }

@@ -5,12 +5,13 @@ import java.util.ArrayList;
 public class Client extends Thread {
     String nume;
     ArrayList<Birou> birouri;
+    ArrayList<String> documente;
 
-    public Client(String nume, ArrayList<Birou> b) {
+    public Client(String nume ) { //trebuie sa mutam ArrayList birouri in CitireJson
         this.nume = nume;
         birouri = new ArrayList<>();
         //metoda citire documente json
-        getBirouFromDocument("Document 1 2", b);
+        // getBirouFromDocument("Document 1 2", b);
     }
 
     public void run() {
