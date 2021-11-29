@@ -5,31 +5,18 @@ import java.util.ArrayList;
 public class Client extends Thread {
     String nume;
     ArrayList<Birou> birouri;
-    ArrayList<String> documente;
 
-    public Client(String nume ) { //trebuie sa mutam ArrayList birouri in CitireJson
+    public Client(String nume, ArrayList<Birou> birouri) {
         this.nume = nume;
-        birouri = new ArrayList<>();
-        //metoda citire documente json
-        // getBirouFromDocument("Document 1 2", b);
+        this.birouri = birouri;
     }
 
     public void run() {
         for (Birou b : birouri) {
-            b.addClientToQueue(this);
+            if(b!=null)
+                b.addClientToQueue(this);
         }
 
-    }
-
-    public void getBirouFromDocument(String numeDocument, ArrayList<Birou> b) {
-        String[] array = numeDocument.split(" ");
-        for (int i = 1; i < array.length; i++) {
-            for (Birou birou : b) {
-                if (birou.getId() == Integer.parseInt(array[i])) {
-                    birouri.add(birou);
-                }
-            }
-        }
     }
 
     public String toString() {

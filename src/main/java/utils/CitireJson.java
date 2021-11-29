@@ -28,14 +28,19 @@ public class CitireJson
         }
         return (JSONArray) list.get("clienti");
     }
-    public static ArrayList<Client> getClient(){
+
+    public static ArrayList<Client> getClient(Birou[] birouri){
         JSONArray list=CitireJson.readFromFiles("src/main/resources/ClientiSiDocumente.json");
         ArrayList <Client> clienti = new ArrayList();
         Iterator<JSONObject> it = list.iterator();
         while(it.hasNext()) {
             JSONObject obj = it.next();
-            Client c = new Client((String)obj.get("name"));
-            System.out.println(c);
+            ArrayList<Birou> birou = new ArrayList<>();
+            birou.add(birouri[Integer.parseInt((String)obj.get("doc1"))-1]);
+            birou.add(birouri[Integer.parseInt((String)obj.get("doc2"))-1]);
+            birou.add(birouri[Integer.parseInt((String)obj.get("doc3"))-1]);
+            Client c = new Client((String)obj.get("name"), birou);
+            c.start();
             clienti.add(c);
         }
         return clienti;
