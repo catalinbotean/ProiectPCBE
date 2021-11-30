@@ -35,10 +35,14 @@ public class CitireJson
         Iterator<JSONObject> it = list.iterator();
         while(it.hasNext()) {
             JSONObject obj = it.next();
-            ArrayList<Birou> birou = new ArrayList<>();
-            birou.add(birouri[Integer.parseInt((String)obj.get("doc1"))-1]);
-            birou.add(birouri[Integer.parseInt((String)obj.get("doc2"))-1]);
-            birou.add(birouri[Integer.parseInt((String)obj.get("doc3"))-1]);
+            Birou[] birou = new Birou[5];
+            birou[0] = birouri[Integer.parseInt((String)obj.get("doc1"))-1];
+            System.out.println(birou[0]);
+
+            birou[1] = birouri[Integer.parseInt((String)obj.get("doc2"))-1];
+            System.out.println(birou[1]);
+            birou[2] = birouri[Integer.parseInt((String)obj.get("doc3"))-1];
+            System.out.println(birou[2]);
             Client c = new Client((String)obj.get("name"), birou);
             c.start();
             clienti.add(c);

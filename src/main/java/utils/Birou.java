@@ -48,6 +48,14 @@ public class Birou implements Runnable {
         }
     }
 
+    public int getDocument(){
+        return id;
+    }
+
+    public String toString(){
+        return getGhiseu1().getName();
+    }
+
     public synchronized void goPrintDocument(int documentNumber, Ghiseu ghiseu){
         this.imprimanta.print(documentNumber, ghiseu);
         System.out.println("s-a eliberat imprimanta");
