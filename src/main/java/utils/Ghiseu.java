@@ -7,6 +7,7 @@ public class Ghiseu extends Thread {
     private int documentNumberToPrint;
     private boolean taken = false;
     private boolean isCoffeeBreak = false;
+    private Client currentClient;
 
     public Ghiseu(String n, int documentNumberToPrint) {
         name = n;
@@ -16,16 +17,14 @@ public class Ghiseu extends Thread {
     @Override
     public void run() {
         while (true) {
-            synchronized (this){
-                if (!taken && !isCoffeeBreak) {
-                    taken = true;
-                    takeClient(b);
-                    taken = false;
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+            if (!isCoffeeBreak) {
+                taken = true;
+                takeClient(b);
+                taken = false;
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -37,8 +36,12 @@ public class Ghiseu extends Thread {
 
     public void takeClient(Birou b) {
         try {
-            System.out.println(b.getQueue().take() + " " + name);
-            b.goPrintDocument(this.documentNumberToPrint, this);
+            if(b != null && b.getQueue().size() != 0){
+                this.currentClient = b.getQueue().take();
+                System.out.println("Clientul care e in take " + this.currentClient.getNume() + " ghiseul " + name);
+                b.goPrintDocument(this.documentNumberToPrint, this);
+                this.currentClient.primesteDocument(documentNumberToPrint);
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -52,12 +55,16 @@ public class Ghiseu extends Thread {
         try {
             this.isCoffeeBreak = true;
             System.out.println("n-ar mai trebui sa avem vreun client luat in " + name);
-            Thread.sleep(10000);
+            Thread.sleep(5000);
             this.isCoffeeBreak = false;
             System.out.println("am iesit din pauza de masa");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean isGhiseuInCoffeeBreak(){
+        return isCoffeeBreak;
     }
 
     public String toString() {

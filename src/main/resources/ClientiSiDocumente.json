@@ -1,10 +1,10 @@
 {"clienti":[
   {"name":"Bianca", "doc1": "1", "doc2":  "3", "doc3": "4" },
-  {"name":"Adi", "doc1": "2", "doc2":  "3", "doc3": "5"},
-  {"name":"Cata", "doc1": "2", "doc2":  "3", "doc3": "5"},
+  {"name":"Adi", "doc1": "1", "doc2":  "3", "doc3": "4"},
+  {"name":"Cata", "doc1": "1", "doc2":  "3", "doc3": "4"},
   {"name":"Diana ", "doc1": "1", "doc2":  "3", "doc3": "4"},
-  {"name":"Alex", "doc1": "2", "doc2":  "3", "doc3": "4"},
-  {"name":"Cristian", "doc1": "1", "doc2":  "3", "doc3": "5"},
-  {"name":"Matei", "doc1": "2", "doc2":  "3", "doc3": "4"},
-  {"name":"Dorian", "doc1": "1", "doc2":  "3", "doc3": "5"}
+  {"name":"Alex", "doc1": "1", "doc2":  "3", "doc3": "4"},
+  {"name":"Cristian", "doc1": "1", "doc2":  "3", "doc3": "4"},
+  {"name":"Matei", "doc1": "1", "doc2":  "3", "doc3": "4"},
+  {"name":"Dorian", "doc1": "1", "doc2":  "3", "doc3": "4"}
 ]}

@@ -1,28 +1,55 @@
 package utils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Client extends Thread {
-    String nume;
-    Birou[] birouri = new Birou[5];
-    int[] documente = new int[5];
+    private String nume;
+    private List<Birou> birouri;
+    private List<Integer> documentePrimite = new ArrayList<>();
+    private volatile boolean clientSent = false;
 
-    public Client(String nume, Birou[] birouri) {
+    public Client(String nume, List<Birou> birouri) {
         this.nume = nume;
         this.birouri = birouri;
-        for(int i=0;i<= birouri.length;i++){
-            if(birouri[i] != null)
-                documente[i] = birouri[i].getDocument();
+    }
+
+    @Override
+    public void run() {
+        while(this.documentePrimite.size() != 3){
+            if(!clientSent){
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                sendClientToBirou();
+            }
         }
     }
 
-    public void run() {
-        for (int i = 0; i <= birouri.length; i++)
-            if(birouri[i] != null)
-                birouri[i].addClientToQueue(this);
+    private void sendClientToBirou(){
+        clientSent = true;
+        if(birouri.size() != 0){
+            birouri.get(0).addClientToQueue(this);
+        }
+    }
+
+
+    public void primesteDocument(int nrDocument){
+        this.documentePrimite.add(nrDocument);
+        if(birouri.size() != 0){
+            birouri.remove(0);
+            System.out.println("Documentele clientului " + nume + this.documentePrimite);
+            clientSent = false;
+        }
     }
 
     public String toString() {
+        return nume;
+    }
+
+    public String getNume() {
         return nume;
     }
 }

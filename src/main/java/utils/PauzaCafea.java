@@ -14,13 +14,14 @@ public class PauzaCafea extends Thread {
     public void run() {
         while(true){
             try {
-                Thread.sleep(3000);
+                Thread.sleep(2500);
                 Random r=new Random();
                 int randomNumber=r.nextInt(ghisee.size());
                 Ghiseu ghiseu = ghisee.get(randomNumber);
-                System.out.println("*************** pauza");
-                if(!ghiseu.isTaken()){
+                if(!ghiseu.isTaken() && !ghiseu.isGhiseuInCoffeeBreak()){
+                    System.out.println("Ghiseul " + ghiseu + " intra in pauza" );
                     ghiseu.takeCoffeeBreak();
+                    Thread.sleep(2500);
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();

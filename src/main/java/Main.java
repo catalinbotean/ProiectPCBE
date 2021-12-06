@@ -7,15 +7,21 @@ public class Main {
 
     public static void main(String args[]) {
         Ghiseu g1b1 = new Ghiseu("Ghiseu 1 Birou 1", 1);
-        Ghiseu g2b1 = new Ghiseu("Ghiseu 2 Birou 1",2);
-        ArrayList<Ghiseu> ghiseeb1 = new ArrayList<>(List.of(g1b1, g2b1));
+        Ghiseu g2b1 = new Ghiseu("Ghiseu 2 Birou 1",1);
+        Ghiseu g3b1 = new Ghiseu("Ghiseu 3 Birou 1", 1);
+        Ghiseu g4b1 = new Ghiseu("Ghiseu 4 Birou 1",1);
+        ArrayList<Ghiseu> ghiseeb1 = new ArrayList<>(List.of(g1b1, g2b1, g3b1, g4b1));
         Birou b1 = new Birou(ghiseeb1);
-        PauzaCafea pauzaCafea = new PauzaCafea(ghiseeb1);
         g1b1.start();
         g2b1.start();
+        g3b1.start();
+        g4b1.start();
+
+        PauzaCafea pauzaCafea = new PauzaCafea(ghiseeb1);
         pauzaCafea.start();
-        Ghiseu g1b2 = new Ghiseu("Ghiseu 1 Birou 2", 3);
-        Ghiseu g2b2 = new Ghiseu("Ghiseu 2 Birou 2", 3);
+
+        Ghiseu g1b2 = new Ghiseu("Ghiseu 1 Birou 2", 2);
+        Ghiseu g2b2 = new Ghiseu("Ghiseu 2 Birou 2", 2);
         g1b2.start();
         g2b2.start();
 
@@ -37,9 +43,9 @@ public class Main {
         ghiseeB3.add(g3b3);
         Birou b3 = new Birou(ghiseeB3);
 
-        Ghiseu g1b4 = new Ghiseu("Ghiseu 1 Birou 4", 3);
-        Ghiseu g2b4 = new Ghiseu("Ghiseu 2 Birou 4", 3);
-        Ghiseu g3b4 = new Ghiseu("Ghiseu 3 Birou 4", 3);
+        Ghiseu g1b4 = new Ghiseu("Ghiseu 1 Birou 4", 4);
+        Ghiseu g2b4 = new Ghiseu("Ghiseu 2 Birou 4", 4);
+        Ghiseu g3b4 = new Ghiseu("Ghiseu 3 Birou 4", 4);
         g1b4.start();
         g2b4.start();
         g3b4.start();
@@ -49,9 +55,9 @@ public class Main {
         ghiseeB4.add(g3b4);
         Birou b4 = new Birou(ghiseeB4);
 
-        Ghiseu g1b5 = new Ghiseu("Ghiseu 1 Birou 5", 3);
-        Ghiseu g2b5 = new Ghiseu("Ghiseu 2 Birou 5", 3);
-        Ghiseu g3b5 = new Ghiseu("Ghiseu 3 Birou 5", 3);
+        Ghiseu g1b5 = new Ghiseu("Ghiseu 1 Birou 5", 5);
+        Ghiseu g2b5 = new Ghiseu("Ghiseu 2 Birou 5", 5);
+        Ghiseu g3b5 = new Ghiseu("Ghiseu 3 Birou 5", 5);
         g1b5.start();
         g2b5.start();
         g3b5.start();
@@ -71,5 +77,6 @@ public class Main {
 
 
         CitireJson.getClient(birouri);
+
     }
 }
