@@ -1,5 +1,7 @@
 package utils;
 
+import java.util.concurrent.Semaphore;
+
 public class Ghiseu extends Thread {
 
     private String name;
@@ -8,6 +10,8 @@ public class Ghiseu extends Thread {
     private boolean taken = false;
     private boolean isCoffeeBreak = false;
     private Client currentClient;
+    private final Semaphore ghiseuS = new Semaphore(0);
+    private final Semaphore clientS = new Semaphore(1);
 
     public Ghiseu(String n, int documentNumberToPrint) {
         name = n;
@@ -17,27 +21,52 @@ public class Ghiseu extends Thread {
     @Override
     public void run() {
         while (true) {
-            if (!isCoffeeBreak) {
-                taken = true;
-                takeClient(b);
-                taken = false;
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
+            createDocument();
         }
+    }
+
+    public boolean getTaken(){
+        return taken;
+    }
+
+    public void setTaken(boolean taken){
+        this.taken = taken;
     }
 
     public void setBirou(Birou b) {
         this.b = b;
     }
 
+    public void generateDocument(Client c){
+        try {
+            clientS.acquire();
+            System.out.println("Clientul "+c+" a primit documentul "+ documentNumberToPrint);
+            setTaken(false);
+            ghiseuS.release();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void createDocument(){
+        try {
+            ghiseuS.acquire();
+            b.goPrintDocument(this.documentNumberToPrint, this);
+            this.currentClient.primesteDocument(documentNumberToPrint);
+            clientS.release();
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void takeItem(int item){
+        System.out.println("Am preluat documentul "+ item+" la ghiseul "+name);
+    }
+
     public void takeClient(Birou b) {
         try {
             if(b != null && b.getQueue().size() != 0){
-                this.currentClient = b.getQueue().take();
+                //this.currentClient = b.getQueue().take();
                 System.out.println("Clientul care e in take " + this.currentClient.getNume() + " ghiseul " + name);
                 b.goPrintDocument(this.documentNumberToPrint, this);
                 this.currentClient.primesteDocument(documentNumberToPrint);
