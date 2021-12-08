@@ -9,7 +9,6 @@ public class Ghiseu extends Thread {
     private int documentNumberToPrint;
     private boolean taken = false;
     private boolean isCoffeeBreak = false;
-    private Client currentClient;
     private final Semaphore ghiseuS = new Semaphore(0);
     private final Semaphore clientS = new Semaphore(1);
 
@@ -52,27 +51,9 @@ public class Ghiseu extends Thread {
         try {
             ghiseuS.acquire();
             b.goPrintDocument(this.documentNumberToPrint, this);
-            this.currentClient.primesteDocument(documentNumberToPrint);
             clientS.release();
         } catch (InterruptedException ex) {
             ex.printStackTrace();
-        }
-    }
-
-    public void takeItem(int item){
-        System.out.println("Am preluat documentul "+ item+" la ghiseul "+name);
-    }
-
-    public void takeClient(Birou b) {
-        try {
-            if(b != null && b.getQueue().size() != 0){
-                //this.currentClient = b.getQueue().take();
-                System.out.println("Clientul care e in take " + this.currentClient.getNume() + " ghiseul " + name);
-                b.goPrintDocument(this.documentNumberToPrint, this);
-                this.currentClient.primesteDocument(documentNumberToPrint);
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
     }
 

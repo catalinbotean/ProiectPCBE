@@ -9,12 +9,16 @@ import java.util.concurrent.Semaphore;
 public class Birou {
     private static int numarBirouri = 1;
     private int id;
+    private int currentNumberOfOrder = 1;
+    private int currentClient = 1;
     private BlockingQueue<Integer> queue = new LinkedBlockingQueue<>();
+    private ArrayList<Integer> numberOfOrder = new ArrayList<>();
     private ArrayList<Ghiseu> ghisee;
     private Imprimanta imprimanta;
     private POS pos;
     private final Semaphore ghiseeDisponibile;
     private final Semaphore mutex = new Semaphore(1);
+    private final Semaphore numberOfOrderMutex = new Semaphore(1);
 
     public Birou(ArrayList<Ghiseu> ghisee) {
         this.ghisee = ghisee;
@@ -27,10 +31,36 @@ public class Birou {
 
     public void getDocument(Client c){
         try {
-
             ghiseeDisponibile.acquire();
+            getNumberOfOrder(c);
+            goNow(c);
             alegeGhiseu(c);
             ghiseeDisponibile.release();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public synchronized void goNow(Client c){
+        while(c.getNumberOfOrder()!=currentClient){
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        currentClient++;
+        System.out.println(c+ " e urmatorul client la "+this);
+        notifyAll();
+    }
+
+    public void getNumberOfOrder(Client c){
+        try {
+            numberOfOrderMutex.acquire();
+            numberOfOrder.add(currentNumberOfOrder);
+            c.setNumberOfOrder(currentNumberOfOrder);
+            currentNumberOfOrder++;
+            numberOfOrderMutex.release();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -39,12 +69,11 @@ public class Birou {
     public void alegeGhiseu(Client c){
         try {
             mutex.acquire();
+            System.out.println(c+ " "+c.getNumberOfOrder() + " isi alege Ghiseul");
             Ghiseu g;
+            ghisee.forEach(ghiseu -> System.out.println(ghiseu+ " " + ghiseu.getTaken()));
             do {
-                System.out.println(c);
                 g = ghisee.get((int) (Math.random() * ghisee.size()));
-                System.out.println(g);
-
             }while(g.getTaken()==true);
             g.setTaken(true);
             mutex.release();
@@ -69,10 +98,6 @@ public class Birou {
             this.pos.paySum(sum);
             Thread.sleep(500);
         }
-    }
-
-    public BlockingQueue<Integer> getQueue() {
-        return queue;
     }
 
     public String toString(){
