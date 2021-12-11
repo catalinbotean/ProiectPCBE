@@ -1,8 +1,9 @@
+
+
 package utils;
 
+import java.util.Vector;
 import java.util.ArrayList;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Semaphore;
 
 
@@ -11,38 +12,39 @@ public class Birou {
     private int id;
     private int currentNumberOfOrder = 1;
     private int currentClient = 1;
-    private BlockingQueue<Integer> queue = new LinkedBlockingQueue<>();
-    private ArrayList<Integer> numberOfOrder = new ArrayList<>();
+    private Vector<Integer> numberOfOrder = new Vector<>();
     private ArrayList<Ghiseu> ghisee;
-    private Imprimanta imprimanta;
-    private POS pos;
+    private final Semaphore waitingRoomClients = new Semaphore(6);
+    private final Semaphore completeForm = new Semaphore(3);
     private final Semaphore ghiseeDisponibile;
-    private final Semaphore mutex = new Semaphore(1);
     private final Semaphore numberOfOrderMutex = new Semaphore(1);
+    private final Semaphore usePrinter = new Semaphore(1);
+    private final Semaphore usePOS = new Semaphore(1);
 
     public Birou(ArrayList<Ghiseu> ghisee) {
         this.ghisee = ghisee;
         this.id = numarBirouri++;
         this.ghisee.forEach(ghiseu -> ghiseu.setBirou(this));
-        this.imprimanta = new Imprimanta();
-        this.pos = new POS();
         ghiseeDisponibile = new Semaphore(ghisee.size());
     }
 
-    public void getDocument(Client c){
+    public void getDocument(Client c) {
         try {
-            ghiseeDisponibile.acquire();
+            waitingRoomClients.acquire();
+            completeForm.acquire();
             getNumberOfOrder(c);
+            completeForm.release();
             goNow(c);
             alegeGhiseu(c);
             ghiseeDisponibile.release();
+            System.out.println(c + " a plecat de la ghiseu");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-    public synchronized void goNow(Client c){
-        while(c.getNumberOfOrder()!=currentClient){
+    public synchronized void goNow(Client c) {
+        while (c.getNumberOfOrder() != currentClient) {
             try {
                 wait();
             } catch (InterruptedException e) {
@@ -50,11 +52,17 @@ public class Birou {
             }
         }
         currentClient++;
-        System.out.println(c+ " e urmatorul client la "+this);
+        System.out.println(c + " e urmatorul client la " + this);
+        try {
+            ghiseeDisponibile.acquire();
+            numberOfOrderMutex.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         notifyAll();
     }
 
-    public void getNumberOfOrder(Client c){
+    public void getNumberOfOrder(Client c) {
         try {
             numberOfOrderMutex.acquire();
             numberOfOrder.add(currentNumberOfOrder);
@@ -66,41 +74,40 @@ public class Birou {
         }
     }
 
-    public void alegeGhiseu(Client c){
+    public void alegeGhiseu(Client c) {
+        System.out.println(c + " cu numar de ordine " + c.getNumberOfOrder() + " isi alege Ghiseul");
+        Ghiseu g;
+        do {
+            g = ghisee.get((int) (Math.random() * ghisee.size()));
+        } while (g.isTaken() == false);
+        System.out.println(c + " si-a ales ghiseul " + g);
+        waitingRoomClients.release();
+        numberOfOrderMutex.release();
+        g.generateDocument(c);
+    }
+
+    public void printDocument(Functionar f) {
         try {
-            mutex.acquire();
-            System.out.println(c+ " "+c.getNumberOfOrder() + " isi alege Ghiseul");
-            Ghiseu g;
-            ghisee.forEach(ghiseu -> System.out.println(ghiseu+ " " + ghiseu.getTaken()));
-            do {
-                g = ghisee.get((int) (Math.random() * ghisee.size()));
-            }while(g.getTaken()==true);
-            g.setTaken(true);
-            mutex.release();
-            g.generateDocument(c);
+            usePrinter.acquire();
+            System.out.println("Functionarul de la ghiseul " + f.getGhiseu() + " a utilizat imprimanta");
+            usePrinter.release();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-    public void goPrintDocument(int documentNumber, Ghiseu ghiseu) throws InterruptedException {
-        Thread.sleep(500);
-        synchronized (this) {
-            this.imprimanta.print(documentNumber, ghiseu);
-            Thread.sleep(500);
-        }
-        pay(1);
-    }
-
-    private void pay(int sum) throws InterruptedException {
-        Thread.sleep(500);
-        synchronized (this) {
-            this.pos.paySum(sum);
-            Thread.sleep(500);
+    public void makePayment(Functionar f) {
+        try {
+            usePOS.acquire();
+            System.out.println("A fost efectuata plata la ghiseul " + f.getGhiseu());
+            usePOS.release();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
-    public String toString(){
+
+    public String toString() {
         return Integer.toString(id);
     }
 }

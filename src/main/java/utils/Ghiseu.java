@@ -2,82 +2,84 @@ package utils;
 
 import java.util.concurrent.Semaphore;
 
-public class Ghiseu extends Thread {
+public class Ghiseu {
 
     private String name;
     private Birou b;
     private int documentNumberToPrint;
-    private boolean taken = false;
-    private boolean isCoffeeBreak = false;
-    private final Semaphore ghiseuS = new Semaphore(0);
-    private final Semaphore clientS = new Semaphore(1);
+    private volatile StatusGhiseu status = StatusGhiseu.NEOCUPAT;
+    private final Semaphore ghiseuSemafor = new Semaphore(0);
+    private final Semaphore clientSemafor = new Semaphore(0);
+    private final Semaphore changeStatus = new Semaphore(1);
 
     public Ghiseu(String n, int documentNumberToPrint) {
         name = n;
-        this.documentNumberToPrint  = documentNumberToPrint;
+        this.documentNumberToPrint = documentNumberToPrint;
     }
 
-    @Override
-    public void run() {
-        while (true) {
-            createDocument();
-        }
+    public StatusGhiseu getStatus() {
+        return status;
     }
 
-    public boolean getTaken(){
-        return taken;
-    }
-
-    public void setTaken(boolean taken){
-        this.taken = taken;
+    public void setStatus(StatusGhiseu status) {
+        this.status = status;
     }
 
     public void setBirou(Birou b) {
         this.b = b;
     }
 
-    public void generateDocument(Client c){
+    public boolean isTaken() {
         try {
-            clientS.acquire();
-            System.out.println("Clientul "+c+" a primit documentul "+ documentNumberToPrint);
-            setTaken(false);
-            ghiseuS.release();
+            changeStatus.acquire();
+            if (status == StatusGhiseu.NEOCUPAT) {
+                setStatus(StatusGhiseu.OCUPAT);
+                changeStatus.release();
+                return true;
+            }
+            changeStatus.release();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public void generateDocument(Client c) {
+        try {
+            ghiseuSemafor.release();
+            clientSemafor.acquire();
+            System.out.println("Clientul " + c + " a primit documentul " + documentNumberToPrint);
+            setStatus(StatusGhiseu.NEOCUPAT);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-    public void createDocument(){
+    public void createDocument(Functionar f) {
         try {
-            ghiseuS.acquire();
-            b.goPrintDocument(this.documentNumberToPrint, this);
-            clientS.release();
+            ghiseuSemafor.acquire();
+            Thread.sleep(500);
+            b.printDocument(f);
+            b.makePayment(f);
+            clientSemafor.release();
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
     }
 
-    public boolean isTaken(){
-        return taken;
-    }
-
-    public void takeCoffeeBreak(){
+    public void takeCoffeeBreak(PauzaCafea p) {
         try {
-            this.isCoffeeBreak = true;
-            System.out.println("n-ar mai trebui sa avem vreun client luat in " + name);
-            Thread.sleep(5000);
-            this.isCoffeeBreak = false;
-            System.out.println("am iesit din pauza de masa");
+            changeStatus.acquire();
+            setStatus(StatusGhiseu.PAUZA);
+            changeStatus.release();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-    public boolean isGhiseuInCoffeeBreak(){
-        return isCoffeeBreak;
-    }
-
-    public String toString() {
+    public String toString(){
         return name;
     }
 }
+
+

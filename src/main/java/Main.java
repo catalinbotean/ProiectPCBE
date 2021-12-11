@@ -12,18 +12,24 @@ public class Main {
         Ghiseu g4b1 = new Ghiseu("Ghiseu 4 Birou 1",1);
         ArrayList<Ghiseu> ghiseeb1 = new ArrayList<>(List.of(g1b1, g2b1, g3b1, g4b1));
         Birou b1 = new Birou(ghiseeb1);
-        g1b1.start();
-        g2b1.start();
-        g3b1.start();
-        g4b1.start();
+        Functionar fg1b1 = new Functionar(g1b1);
+        Functionar fg2b1 = new Functionar(g2b1);
+        Functionar fg3b1 = new Functionar(g3b1);
+        Functionar fg4b1 = new Functionar(g4b1);
+        fg1b1.start();
+        fg2b1.start();
+        fg3b1.start();
+        fg4b1.start();
 
         PauzaCafea pauzaCafea = new PauzaCafea(ghiseeb1);
         pauzaCafea.start();
 
         Ghiseu g1b2 = new Ghiseu("Ghiseu 1 Birou 2", 2);
         Ghiseu g2b2 = new Ghiseu("Ghiseu 2 Birou 2", 2);
-        g1b2.start();
-        g2b2.start();
+        Functionar fg1b2 = new Functionar(g1b2);
+        Functionar fg2b2 = new Functionar(g2b2);
+        fg1b2.start();
+        fg2b2.start();
 
         ArrayList<Ghiseu> ghiseeb2 = new ArrayList<>();
         ghiseeb2.add(g1b2);
@@ -33,9 +39,12 @@ public class Main {
         Ghiseu g1b3 = new Ghiseu("Ghiseu 1 Birou 3", 3);
         Ghiseu g2b3 = new Ghiseu("Ghiseu 2 Birou 3", 3);
         Ghiseu g3b3 = new Ghiseu("Ghiseu 3 Birou 3", 3);
-        g1b3.start();
-        g2b3.start();
-        g3b3.start();
+        Functionar fg1b3 = new Functionar(g1b3);
+        Functionar fg2b3 = new Functionar(g2b3);
+        Functionar fg3b3 = new Functionar(g3b3);
+        fg1b3.start();
+        fg2b3.start();
+        fg3b3.start();
 
         ArrayList<Ghiseu> ghiseeB3 = new ArrayList<>();
         ghiseeB3.add(g1b3);
@@ -46,9 +55,12 @@ public class Main {
         Ghiseu g1b4 = new Ghiseu("Ghiseu 1 Birou 4", 4);
         Ghiseu g2b4 = new Ghiseu("Ghiseu 2 Birou 4", 4);
         Ghiseu g3b4 = new Ghiseu("Ghiseu 3 Birou 4", 4);
-        g1b4.start();
-        g2b4.start();
-        g3b4.start();
+        Functionar fg1b4 = new Functionar(g1b4);
+        Functionar fg2b4 = new Functionar(g2b4);
+        Functionar fg3b4 = new Functionar(g3b4);
+        fg1b4.start();
+        fg2b4.start();
+        fg3b4.start();
         ArrayList<Ghiseu> ghiseeB4 = new ArrayList<>();
         ghiseeB4.add(g1b4);
         ghiseeB4.add(g2b4);
@@ -58,9 +70,12 @@ public class Main {
         Ghiseu g1b5 = new Ghiseu("Ghiseu 1 Birou 5", 5);
         Ghiseu g2b5 = new Ghiseu("Ghiseu 2 Birou 5", 5);
         Ghiseu g3b5 = new Ghiseu("Ghiseu 3 Birou 5", 5);
-        g1b5.start();
-        g2b5.start();
-        g3b5.start();
+        Functionar fg1b5 = new Functionar(g1b5);
+        Functionar fg2b5 = new Functionar(g2b5);
+        Functionar fg3b5 = new Functionar(g3b5);
+        fg1b5.start();
+        fg2b5.start();
+        fg3b5.start();
 
         ArrayList<Ghiseu> ghiseeB5 = new ArrayList<>();
         ghiseeB5.add(g1b5);
