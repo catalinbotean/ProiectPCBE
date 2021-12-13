@@ -5,27 +5,23 @@ import java.util.Random;
 
 public class PauzaCafea extends Thread {
     List<Ghiseu> ghisee;
-
-    public PauzaCafea(List<Ghiseu> ghisee){
+    Birou[] birouri;
+    public PauzaCafea(Birou[] birouri, List<Ghiseu> ghisee){
+        this.birouri = birouri;
         this.ghisee = ghisee;
     }
 
     @Override
     public void run() {
-        while(true){
-            try {
-                Thread.sleep(2500);
-                Random r=new Random();
-                int randomNumber=r.nextInt(ghisee.size());
-                Ghiseu ghiseu = ghisee.get(randomNumber);
-                if(!ghiseu.isTaken() && !ghiseu.isGhiseuInCoffeeBreak()){
-                    System.out.println("Ghiseul " + ghiseu + " intra in pauza" );
-                    ghiseu.takeCoffeeBreak();
-                    Thread.sleep(2500);
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        while(Client.getNumberOfClients()!= 0){
+            Random r=new Random();
+            int randomNumber = r.nextInt(birouri.length-1);
+            Birou b = birouri[randomNumber];
+            if(b!=null)
+                b.puneInPauza();
+        }
+        for(Ghiseu g:ghisee){
+            g.getFunctionar().interrupt();
         }
     }
 }

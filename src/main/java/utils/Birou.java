@@ -1,11 +1,9 @@
-
-
 package utils;
 
 import java.util.Vector;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Semaphore;
-
 
 public class Birou {
     private static int numarBirouri = 1;
@@ -13,11 +11,13 @@ public class Birou {
     private int currentNumberOfOrder = 1;
     private int currentClient = 1;
     private Vector<Integer> numberOfOrder = new Vector<>();
-    private ArrayList<Ghiseu> ghisee;
+    private List<Ghiseu> ghisee;
+    private List<Ghiseu> ghiseeFrecventate;
+    private final Semaphore ghiseeDisponibile;
     private final Semaphore waitingRoomClients = new Semaphore(6);
     private final Semaphore completeForm = new Semaphore(3);
-    private final Semaphore ghiseeDisponibile;
     private final Semaphore numberOfOrderMutex = new Semaphore(1);
+    private final Semaphore ghiseuSemafor = new Semaphore(1);
     private final Semaphore usePrinter = new Semaphore(1);
     private final Semaphore usePOS = new Semaphore(1);
 
@@ -26,6 +26,7 @@ public class Birou {
         this.id = numarBirouri++;
         this.ghisee.forEach(ghiseu -> ghiseu.setBirou(this));
         ghiseeDisponibile = new Semaphore(ghisee.size());
+        ghiseeFrecventate = new ArrayList<>();
     }
 
     public void getDocument(Client c) {
@@ -36,7 +37,6 @@ public class Birou {
             completeForm.release();
             goNow(c);
             alegeGhiseu(c);
-            ghiseeDisponibile.release();
             System.out.println(c + " a plecat de la ghiseu");
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -55,7 +55,7 @@ public class Birou {
         System.out.println(c + " e urmatorul client la " + this);
         try {
             ghiseeDisponibile.acquire();
-            numberOfOrderMutex.acquire();
+            ghiseuSemafor.acquire();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -76,14 +76,21 @@ public class Birou {
 
     public void alegeGhiseu(Client c) {
         System.out.println(c + " cu numar de ordine " + c.getNumberOfOrder() + " isi alege Ghiseul");
-        Ghiseu g;
-        do {
-            g = ghisee.get((int) (Math.random() * ghisee.size()));
-        } while (g.isTaken() == false);
+        Ghiseu g = ghisee.remove((int) (Math.random() * ghisee.size()));
+        ghiseeFrecventate.remove(g);
         System.out.println(c + " si-a ales ghiseul " + g);
         waitingRoomClients.release();
-        numberOfOrderMutex.release();
+        ghiseuSemafor.release();
         g.generateDocument(c);
+        try {
+            ghiseuSemafor.acquire();
+            ghisee.add(g);
+            ghiseeFrecventate.add(g);
+            ghiseuSemafor.release();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        ghiseeDisponibile.release();
     }
 
     public void printDocument(Functionar f) {
@@ -109,5 +116,57 @@ public class Birou {
 
     public String toString() {
         return Integer.toString(id);
+    }
+
+    public void puneInPauza(){
+        try {
+            ghiseeDisponibile.acquire();
+            ghiseuSemafor.acquire();
+            Ghiseu g=null;
+            if(ghiseeFrecventate.size()!=0) {
+                g = ghiseeFrecventate.remove((int) (Math.random() * ghiseeFrecventate.size()));
+                ghisee.remove(g);
+            }
+            ghiseuSemafor.release();
+            if(g!=null) {
+                System.out.println(g + " va intra in pauza de cafea");
+                Task t = new Task(this, g);
+                new Thread(t).start();
+            }else{
+                ghiseeDisponibile.release();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void revineDinPauza(Ghiseu g){
+        try {
+            ghiseuSemafor.acquire();
+            System.out.println(g+ " a iesit din pauza de cafea");
+            ghisee.add(g);
+            ghiseuSemafor.release();
+            ghiseeDisponibile.release();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+class Task implements Runnable {
+    private Birou birou;
+    private Ghiseu ghiseu;
+    public Task(Birou b, Ghiseu g){
+        birou = b;
+        ghiseu = g;
+    }
+
+    public void run() {
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        birou.revineDinPauza(ghiseu);
     }
 }

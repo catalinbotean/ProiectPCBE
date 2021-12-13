@@ -1,15 +1,8 @@
 package utils;
 
-import java.util.concurrent.Semaphore;
-
 public class Functionar extends Thread {
 
     private Ghiseu ghiseu;
-    private int documentNumberToPrint;
-    private boolean taken = false;
-    private volatile StatusGhiseu status = StatusGhiseu.NEOCUPAT;
-    private final Semaphore ghiseuSemafor = new Semaphore(0);
-    private final Semaphore clientSemafor = new Semaphore(0);
 
     public Functionar(Ghiseu ghiseu) {
         this.ghiseu = ghiseu;
@@ -17,8 +10,11 @@ public class Functionar extends Thread {
 
     @Override
     public void run() {
-        while (true) {
-            ghiseu.createDocument(this);
+        try {
+            while (!Thread.currentThread().isInterrupted()) {
+                ghiseu.createDocument(this);              }
+        } catch (InterruptedException e) {
+            System.out.println("Finished");
         }
     }
 
