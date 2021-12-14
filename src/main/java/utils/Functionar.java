@@ -12,9 +12,10 @@ public class Functionar extends Thread {
     public void run() {
         try {
             while (!Thread.currentThread().isInterrupted()) {
-                ghiseu.createDocument(this);              }
+                ghiseu.createDocument(this);
+            }
         } catch (InterruptedException e) {
-            System.out.println("Finished");
+            System.out.println("Functionarul a plecat");
         }
     }
 

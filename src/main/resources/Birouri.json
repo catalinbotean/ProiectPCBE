@@ -1,0 +1,17 @@
+{"birouri":[
+  {"nume":"Birou 1", "numarGhisee": "3", "capacitateWaitingRoom":  "2", "numarMese": "2",
+    "document": "1"
+  },
+  {"nume":"Birou 2", "numarGhisee": "4", "capacitateWaitingRoom":  "3", "numarMese": "3",
+    "document": "2"
+  },
+  {"nume":"Birou 3", "numarGhisee": "2", "capacitateWaitingRoom":  "2", "numarMese": "1",
+    "document": "3"
+  },
+  {"nume":"Birou 4", "numarGhisee": "2", "capacitateWaitingRoom":  "2", "numarMese": "2",
+    "document": "4"
+  },
+  {"nume":"Birou 5", "numarGhisee": "1", "capacitateWaitingRoom":  "1", "numarMese": "1",
+    "document": "5"
+  }
+]}

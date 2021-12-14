@@ -17,11 +17,11 @@ public class Client extends Thread {
 
     @Override
     public void run() {
-        goToDesks();
+        mergeLaBirouri();
         numberOfClients.decrementAndGet();
     }
 
-    private void goToDesks(){
+    private void mergeLaBirouri(){
         for(Birou b : birouri){
             b.getDocument(this);
         }

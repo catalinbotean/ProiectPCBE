@@ -1,10 +1,11 @@
 {"clienti":[
-  {"name":"Bianca", "doc1": "1", "doc2":  "3", "doc3": "4" },
-  {"name":"Adi", "doc1": "1", "doc2":  "3", "doc3": "4"},
-  {"name":"Cata", "doc1": "1", "doc2":  "3", "doc3": "4"},
-  {"name":"Diana ", "doc1": "1", "doc2":  "3", "doc3": "4"},
-  {"name":"Alex", "doc1": "1", "doc2":  "3", "doc3": "4"},
-  {"name":"Cristian", "doc1": "1", "doc2":  "3", "doc3": "4"},
-  {"name":"Matei", "doc1": "1", "doc2":  "3", "doc3": "4"},
-  {"name":"Dorian", "doc1": "1", "doc2":  "3", "doc3": "4"}
+  {"nume":"Bianca", "documente":[{"birou": "1"},{"birou": "3"},{"birou": "4"},{"birou": "1"},{"birou": "3"},{"birou": "2"}] },
+  {"nume":"Adi", "documente":[{"birou": "1"},{"birou": "3"},{"birou": "4"},{"birou": "1"},{"birou": "3"},{"birou": "2"}] },
+  {"nume":"Cata", "documente":[{"birou": "1"},{"birou": "3"},{"birou": "4"},{"birou": "1"},{"birou": "3"},{"birou": "2"}] },
+  {"nume":"Diana", "documente":[{"birou": "1"},{"birou": "3"},{"birou": "4"},{"birou": "1"},{"birou": "3"},{"birou": "2"}]},
+  {"nume":"Alex", "documente":[{"birou": "1"},{"birou": "3"},{"birou": "4"},{"birou": "1"},{"birou": "3"},{"birou": "2"}] },
+  {"nume":"Cristian", "documente":[{"birou": "1"},{"birou": "3"},{"birou": "4"},{"birou": "1"},{"birou": "3"},{"birou": "2"}] },
+  {"nume":"Matei", "documente":[{"birou": "1"},{"birou": "3"},{"birou": "4"},{"birou": "1"},{"birou": "3"},{"birou": "2"}] },
+  {"nume":"Dorian", "documente":[{"birou": "1"},{"birou": "3"},{"birou": "4"},{"birou": "1"},{"birou": "3"},{"birou": "2"}] }
+
 ]}

@@ -22,7 +22,7 @@ public class Ghiseu {
         this.b = b;
     }
 
-    public void generateDocument(Client c) {
+    public int generateDocument(Client c) {
         try {
             ghiseuSemafor.release();
             clientSemafor.acquire();
@@ -30,13 +30,14 @@ public class Ghiseu {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        return documentNumberToPrint;
     }
 
     public void createDocument(Functionar f) throws InterruptedException {
         ghiseuSemafor.acquire();
+        int costDocument = b.tiparesteDocument(f);
+        b.efectueazaPlata(f, costDocument);
         Thread.sleep(500);
-        b.printDocument(f);
-        b.makePayment(f);
         clientSemafor.release();
     }
 

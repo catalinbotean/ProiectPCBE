@@ -1,6 +1,5 @@
 package utils;
 
-import java.util.Vector;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
@@ -8,65 +7,66 @@ import java.util.concurrent.Semaphore;
 public class Birou {
     private static int numarBirouri = 1;
     private int id;
+    private int sumaBani = 0;
     private int currentNumberOfOrder = 1;
     private int currentClient = 1;
-    private Vector<Integer> numberOfOrder = new Vector<>();
     private List<Ghiseu> ghisee;
     private List<Ghiseu> ghiseeFrecventate;
+    private List<Ghiseu> ghiseeInPauza;
     private final Semaphore ghiseeDisponibile;
-    private final Semaphore waitingRoomClients = new Semaphore(6);
-    private final Semaphore completeForm = new Semaphore(3);
+    private final Semaphore waitingRoomClients;
+    private final Semaphore completeForm;
     private final Semaphore numberOfOrderMutex = new Semaphore(1);
     private final Semaphore ghiseuSemafor = new Semaphore(1);
-    private final Semaphore usePrinter = new Semaphore(1);
-    private final Semaphore usePOS = new Semaphore(1);
+    private final Semaphore imprimanta = new Semaphore(1);
+    private final Semaphore pos = new Semaphore(1);
 
-    public Birou(ArrayList<Ghiseu> ghisee) {
+    public Birou(ArrayList<Ghiseu> ghisee, int capacitateWaitingRoom, int numarMese) {
         this.ghisee = ghisee;
         this.id = numarBirouri++;
         this.ghisee.forEach(ghiseu -> ghiseu.setBirou(this));
         ghiseeDisponibile = new Semaphore(ghisee.size());
+        waitingRoomClients = new Semaphore(capacitateWaitingRoom);
+        completeForm = new Semaphore(numarMese);
         ghiseeFrecventate = new ArrayList<>();
+        ghiseeInPauza = new ArrayList<>();
     }
 
-    public void getDocument(Client c) {
+    public int getDocument(Client c) {
+            ajungeInWaitingRoom(c);
+            completeazaFormular(c);
+            obtineNumarDeOrdine(c);
+            Ghiseu g = asteaptaLaCoada(c);
+            int document = g.generateDocument(c);
+            elibereazaGhiseu(c,g);
+            return document;
+    }
+
+    public void ajungeInWaitingRoom(Client c){
         try {
             waitingRoomClients.acquire();
-            completeForm.acquire();
-            getNumberOfOrder(c);
-            completeForm.release();
-            goNow(c);
-            alegeGhiseu(c);
-            System.out.println(c + " a plecat de la ghiseu");
+            System.out.println(c+" a ajuns in sala de asteptare de la Biroul "+ this);
+            waitingRoomClients.release();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-    public synchronized void goNow(Client c) {
-        while (c.getNumberOfOrder() != currentClient) {
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        currentClient++;
-        System.out.println(c + " e urmatorul client la " + this);
+    public void completeazaFormular(Client c){
         try {
-            ghiseeDisponibile.acquire();
-            ghiseuSemafor.acquire();
+            completeForm.acquire();
+            System.out.println(c+" a completat formularul pentru Biroul "+ this);
+            completeForm.release();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        notifyAll();
     }
 
-    public void getNumberOfOrder(Client c) {
+    public void obtineNumarDeOrdine(Client c){
         try {
             numberOfOrderMutex.acquire();
-            numberOfOrder.add(currentNumberOfOrder);
             c.setNumberOfOrder(currentNumberOfOrder);
+            System.out.println(c+" a obtinut numarul de ordine "+currentNumberOfOrder+ " in coada de la Biroul "+ this);
             currentNumberOfOrder++;
             numberOfOrderMutex.release();
         } catch (InterruptedException e) {
@@ -74,18 +74,46 @@ public class Birou {
         }
     }
 
-    public void alegeGhiseu(Client c) {
-        System.out.println(c + " cu numar de ordine " + c.getNumberOfOrder() + " isi alege Ghiseul");
-        Ghiseu g = ghisee.remove((int) (Math.random() * ghisee.size()));
-        ghiseeFrecventate.remove(g);
-        System.out.println(c + " si-a ales ghiseul " + g);
-        waitingRoomClients.release();
-        ghiseuSemafor.release();
-        g.generateDocument(c);
+    public synchronized Ghiseu asteaptaLaCoada(Client c) {
+        while (c.getNumberOfOrder() != currentClient) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            System.out.println(c + " e urmatorul client la rand la Biroul " + this);
+            ghiseeDisponibile.acquire();
+            currentClient++;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Ghiseu g = alegeGhiseu(c);
+        notifyAll();
+        return g;
+    }
+
+    public Ghiseu alegeGhiseu(Client c){
+        Ghiseu g = null;
+        try {
+            ghiseuSemafor.acquire();
+            g = ghisee.remove((int) (Math.random() * ghisee.size()));
+            ghiseeFrecventate.remove(g);
+            System.out.println(c + " si-a ales ghiseul " + g);
+            ghiseuSemafor.release();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return g;
+    }
+
+    public void elibereazaGhiseu(Client c, Ghiseu g){
         try {
             ghiseuSemafor.acquire();
             ghisee.add(g);
             ghiseeFrecventate.add(g);
+            System.out.println(c+ " pleaca de la ghiseul "+g);
             ghiseuSemafor.release();
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -93,45 +121,44 @@ public class Birou {
         ghiseeDisponibile.release();
     }
 
-    public void printDocument(Functionar f) {
+    public int tiparesteDocument(Functionar f) {
+        int costDocument = 0;
         try {
-            usePrinter.acquire();
+            imprimanta.acquire();
             System.out.println("Functionarul de la ghiseul " + f.getGhiseu() + " a utilizat imprimanta");
-            usePrinter.release();
+            costDocument = (int) ((Math.random() * (30 - 20)) + 20);
+            imprimanta.release();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        return costDocument;
     }
 
-    public void makePayment(Functionar f) {
+    public void efectueazaPlata(Functionar f, int costDocument) {
         try {
-            usePOS.acquire();
-            System.out.println("A fost efectuata plata la ghiseul " + f.getGhiseu());
-            usePOS.release();
+            pos.acquire();
+            System.out.println("A fost efectuata plata la ghiseul " + f.getGhiseu() + " in valoare de "+ costDocument+ "lei");
+            sumaBani = sumaBani + costDocument;
+            pos.release();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
-
 
     public String toString() {
         return Integer.toString(id);
     }
 
-    public void puneInPauza(){
+    public void puneInPauza(PauzaCafea p){
         try {
             ghiseeDisponibile.acquire();
-            ghiseuSemafor.acquire();
-            Ghiseu g=null;
-            if(ghiseeFrecventate.size()!=0) {
-                g = ghiseeFrecventate.remove((int) (Math.random() * ghiseeFrecventate.size()));
-                ghisee.remove(g);
-            }
-            ghiseuSemafor.release();
+            Ghiseu g = obtineGhiseu();
             if(g!=null) {
                 System.out.println(g + " va intra in pauza de cafea");
                 Task t = new Task(this, g);
-                new Thread(t).start();
+                Thread r = new Thread(t);
+                p.add(r);
+                r.start();
             }else{
                 ghiseeDisponibile.release();
             }
@@ -140,11 +167,28 @@ public class Birou {
         }
     }
 
+    public Ghiseu obtineGhiseu(){
+        Ghiseu g = null;
+        try {
+            ghiseuSemafor.acquire();
+            if(ghiseeFrecventate.size()>0 && ghiseeInPauza.size()<ghisee.size()/2) {
+                g = ghisee.remove((int) (Math.random() * ghisee.size()));
+                ghiseeFrecventate.remove(g);
+                ghiseeInPauza.add(g);
+            }
+            ghiseuSemafor.release();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return g;
+    }
+
     public void revineDinPauza(Ghiseu g){
         try {
             ghiseuSemafor.acquire();
             System.out.println(g+ " a iesit din pauza de cafea");
             ghisee.add(g);
+            ghiseeInPauza.remove(g);
             ghiseuSemafor.release();
             ghiseeDisponibile.release();
         } catch (InterruptedException e) {
@@ -163,10 +207,10 @@ class Task implements Runnable {
 
     public void run() {
         try {
-            Thread.sleep(3000);
+            Thread.sleep(1000);
+            birou.revineDinPauza(ghiseu);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            System.out.println("Ghiseul s-a inchis");
         }
-        birou.revineDinPauza(ghiseu);
     }
 }
