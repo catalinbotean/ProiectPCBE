@@ -1,66 +1,50 @@
 package utils;
 
-public class Ghiseu extends Thread {
+import java.util.concurrent.Semaphore;
+
+public class Ghiseu {
 
     private String name;
     private Birou b;
+    private Functionar f;
     private int documentNumberToPrint;
-    private boolean taken = false;
-    private boolean isCoffeeBreak = false;
+    private final Semaphore ghiseuSemafor = new Semaphore(0);
+    private final Semaphore clientSemafor = new Semaphore(0);
 
     public Ghiseu(String n, int documentNumberToPrint) {
         name = n;
-        this.documentNumberToPrint  = documentNumberToPrint;
-    }
-
-    @Override
-    public void run() {
-        while (true) {
-            synchronized (this){
-                if (!taken && !isCoffeeBreak) {
-                    taken = true;
-                    takeClient(b);
-                    taken = false;
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
+        this.documentNumberToPrint = documentNumberToPrint;
+        f = new Functionar(this);
+        f.start();
     }
 
     public void setBirou(Birou b) {
         this.b = b;
     }
 
-    public void takeClient(Birou b) {
+    public void generateDocument(Client c) {
         try {
-            System.out.println(b.getQueue().take() + " " + name);
-            b.goPrintDocument(this.documentNumberToPrint, this);
+            ghiseuSemafor.release();
+            clientSemafor.acquire();
+            System.out.println("Clientul " + c + " a primit documentul " + documentNumberToPrint);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-    public boolean isTaken(){
-        return taken;
+    public void createDocument(Functionar f) throws InterruptedException {
+        ghiseuSemafor.acquire();
+        Thread.sleep(500);
+        b.printDocument(f);
+        b.makePayment(f);
+        clientSemafor.release();
     }
 
-    public void takeCoffeeBreak(){
-        try {
-            this.isCoffeeBreak = true;
-            System.out.println("n-ar mai trebui sa avem vreun client luat in " + name);
-            Thread.sleep(10000);
-            this.isCoffeeBreak = false;
-            System.out.println("am iesit din pauza de masa");
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public String toString() {
+    public String toString(){
         return name;
+    }
+
+    public Functionar getFunctionar(){
+        return f;
     }
 }

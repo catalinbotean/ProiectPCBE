@@ -1,38 +1,46 @@
 package utils;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Client extends Thread {
-    String nume;
-    ArrayList<Birou> birouri;
-    ArrayList<String> documente;
+    private static AtomicInteger numberOfClients = new AtomicInteger(0);
+    private String nume;
+    private int numberOfOrder = 0;
+    private List<Birou> birouri;
 
-    public Client(String nume ) { //trebuie sa mutam ArrayList birouri in CitireJson
+    public Client(String nume, List<Birou> birouri) {
         this.nume = nume;
-        birouri = new ArrayList<>();
-        //metoda citire documente json
-        // getBirouFromDocument("Document 1 2", b);
+        this.birouri = birouri;
+        numberOfClients.incrementAndGet();
     }
 
+    @Override
     public void run() {
-        for (Birou b : birouri) {
-            b.addClientToQueue(this);
-        }
-
+        goToDesks();
+        numberOfClients.decrementAndGet();
     }
 
-    public void getBirouFromDocument(String numeDocument, ArrayList<Birou> b) {
-        String[] array = numeDocument.split(" ");
-        for (int i = 1; i < array.length; i++) {
-            for (Birou birou : b) {
-                if (birou.getId() == Integer.parseInt(array[i])) {
-                    birouri.add(birou);
-                }
-            }
+    private void goToDesks(){
+        for(Birou b : birouri){
+            b.getDocument(this);
         }
+    }
+
+    public static int getNumberOfClients(){
+        return numberOfClients.get();
     }
 
     public String toString() {
         return nume;
     }
+
+    public void setNumberOfOrder(int numberOfOrder){
+        this.numberOfOrder = numberOfOrder;
+    }
+
+    public int getNumberOfOrder(){
+        return numberOfOrder;
+    }
+
 }
